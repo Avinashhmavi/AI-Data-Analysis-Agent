@@ -1,72 +1,138 @@
-### AI-Data-Analysis-Agent
+### AI Data Analyst 
 
-📊 AI Data Analyst Agent is a Streamlit-based web application that allows users to upload data files (CSV or Excel) and interact with them using natural language queries. The app leverages theleverages the Groq API to generate SQL queries based on user questions and executes them using DuckDB. The results are displayed in an interactive and user-friendly interface.
+📊 **AI Data Analyst** is a Streamlit-based web application that allows users to upload data files (CSV or Excel) and interact with them using natural language queries. The app leverages the **Groq API** to generate SQL queries based on user questions and executes them using **DuckDB**. The results are displayed in an interactive and user-friendly interface, making data analysis accessible to everyone.
 
-🚀 Features
-File Upload: Upload CSV or Excel files.
+---
 
-Data Preview: View a preview of the uploaded data.
+## 🚀 Features
 
-Natural Language Querying: Ask questions about the data in plain English.
+- **File Upload**: Upload CSV or Excel files.
+- **Data Preview**: View a preview of the uploaded data.
+- **Natural Language Querying**: Ask questions about the data in plain English.
+- **AI-Powered SQL Query Generation**: Automatically generates SQL queries using the Groq API.
+- **Query Execution**: Executes the generated SQL queries using DuckDB.
+- **Result Display**: Displays query results in a tabular format.
 
-SQL Query Generation: Automatically generates SQL queries using the Groq API.
+---
 
-Query Execution: Executes the generated SQL queries using DuckDB.
+## 📋 Pre-Installation Requirements
 
-Result Display: Displays query results in a tabular format.
-
-📋 Pre-Installation Requirements
 Before running the application, ensure you have the following installed:
 
-Python 3.8 or higher: The application is built using Python.
+1. **Python 3.8 or higher**: The application is built using Python.
+2. **Streamlit**: A framework for building web applications.
+3. **DuckDB**: An in-process SQL OLAP database management system.
+4. **Groq API Key**: You need a Groq API key to interact with the Groq API.
 
-Streamlit: A framework for building web applications.
+---
 
-DuckDB: An in-process SQL OLAP database management system.
+## 🛠️ Installation
 
-Groq API Key: You need a Groq API key to interact with the Groq API.
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/ai-data-analyst.git
+   cd ai-data-analyst
+   ```
 
-🛠️ Installation
-Clone the Repository:
+2. **Create a Virtual Environment** (Optional but recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
 
-bash
-Copy
-git clone https://github.com/your-username/smart-data-analyst.git
-cd smart-data-analyst
-Create a Virtual Environment (Optional but recommended):
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-bash
-Copy
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-Install Dependencies:
+4. **Set Up Groq API Key**:
+   - Obtain your Groq API key from the [Groq Cloud](https://groq.com/).
+   - Create a `.env` file in the root directory and add your API key:
+     ```plaintext
+     GROQ_API_KEY=your_api_key_here
+     ```
 
-bash
-Copy
-pip install -r requirements.txt
-Set Up Groq API Key:
+---
 
-Obtain your Groq API key from the Groq Cloud.
+## 🏃‍♂️ Running the Application
 
-Create a .env file in the root directory and add your API key:
+1. **Run the Streamlit App**:
+   ```bash
+   streamlit run ai_data_analyst.py
+   ```
 
-plaintext
-Copy
-GROQ_API_KEY=your_api_key_here
-🏃‍♂️ Running the Application
-Run the Streamlit App:
+2. **Access the App**:
+   - Open your web browser and navigate to `http://localhost:8501`.
 
-bash
-Copy
-streamlit run app.py
-Access the App:
+3. **Upload a File**:
+   - Use the file uploader to upload a CSV or Excel file.
 
-Open your web browser and navigate to http://localhost:8501.
+4. **Ask Questions**:
+   - Enter your question in the text area and click "Analyze" to generate insights.
 
-Upload a File:
+---
 
-Use the file uploader to upload a CSV or Excel file.
+## 📂 File Structure
 
-Ask Questions:
+```
+ai-data-analyst/
+│
+├── app.py                # Main Streamlit application code
+├── requirements.txt      # List of Python dependencies
+├── README.md             # This file
+└── .env                  # Environment variables (e.g., Groq API key)
+```
 
-Enter your question in the text area and click "Analyze" to generate insights.
+---
+
+## 🧑‍💻 Usage Instructions
+
+1. **Upload a Data File**:
+   - Click on the "Upload data file" button and select a CSV or Excel file.
+
+2. **Preview the Data**:
+   - Once the file is uploaded, a preview of the data will be displayed.
+
+3. **Ask a Question**:
+   - Enter a question about the data in the text area provided.
+   - Example: "Show distribution of companies by country."
+
+4. **Generate Insights**:
+   - Click the "Analyze" button to generate and execute the SQL query.
+   - The results will be displayed in a tabular format.
+
+---
+
+## 🛑 Troubleshooting
+
+- **File Upload Issues**:
+  - Ensure the file is in the correct format (CSV or Excel).
+  - Check for any encoding issues, especially with CSV files.
+
+- **Groq API Errors**:
+  - Ensure your Groq API key is correctly set in the `.env` file.
+  - Check your internet connection.
+
+- **SQL Query Errors**:
+  - Ensure the question is clear and relevant to the data.
+  - The app validates the SQL query before execution, so any invalid queries will be flagged.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Streamlit**: For providing an excellent framework for building data apps.
+- **Groq**: For their powerful API that enables natural language processing.
+- **DuckDB**: For their efficient in-memory SQL database.
+
+---
+
+## 📧 Contact
+
+For any questions or feedback, feel free to reach out:
+
+- **Email**: avi.hm24@gmail.com
+
+---
+
+Enjoy analyzing your data with **AI Data Analyst**! 🎉
