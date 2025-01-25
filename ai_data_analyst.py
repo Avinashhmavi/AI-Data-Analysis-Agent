@@ -4,8 +4,12 @@ import duckdb
 import tempfile
 import os
 import re
-import csv  # <-- Missing import added here
+import csv
 from groq import Groq
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def sanitize_table_name(filename):
     """Convert filename to valid SQL table name"""
@@ -22,7 +26,7 @@ def preprocess_and_save(file):
             df = pd.read_csv(file, encoding='utf-8')
         elif file.name.endswith('.xlsx'):
             df = pd.read_excel(file)
-            
+        
         # Clean column names for SQL compatibility
         df.columns = [re.sub(r'[^a-zA-Z0-9_]', '_', col).strip() for col in df.columns]
         
@@ -35,8 +39,6 @@ def preprocess_and_save(file):
     except Exception as e:
         st.error(f"Error processing file: {e}")
         return None, None, None, None
-
-# ... rest of the code remains the same ...
 
 def extract_sql_query(response):
     sql_match = re.search(r"```sql\n(.*?)\n```", response, re.DOTALL)
@@ -63,11 +65,11 @@ def validate_sql_query(sql_query, valid_columns, table_name):
     return True, ""
 
 # Streamlit app
-st.title("📊 Smart Data Analyst")
+st.title("📊 AI Data Analyst")
 
 with st.sidebar:
     st.header("API Configuration")
-    groq_key = st.text_input("Groq API Key:", type="password")
+    groq_key = st.text_input("Groq API Key:", type="password", value=os.getenv("GROQ_API_KEY", ""))
 
 if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
     temp_path, columns, df, table_name = preprocess_and_save(uploaded_file)
