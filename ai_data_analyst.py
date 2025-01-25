@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import duckdb
+import sqlite3  # Use SQLite instead of DuckDB
 import tempfile
 import os
 import re
@@ -78,8 +78,9 @@ if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
         st.write("Preview:")
         st.dataframe(df.head(3))
         
-        conn = duckdb.connect(':memory:')
-        conn.register(table_name, df)
+        # Use SQLite instead of DuckDB
+        conn = sqlite3.connect(':memory:')
+        df.to_sql(table_name, conn, index=False, if_exists='replace')
         
         st.markdown(f"**Available Columns in `{table_name}`:**")
         st.write([col for col in columns])
@@ -93,7 +94,7 @@ if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
                     groq_client = Groq(api_key=groq_key)
                     prompt = f"""
                     You are a SQL expert analyzing {table_name} with columns: {columns}.
-                    Generate a DuckDB-compatible SQL query that answers: "{query}".
+                    Generate a SQLite-compatible SQL query that answers: "{query}".
                     - Use table name: {table_name}
                     - Use ONLY the provided columns
                     - Return ONLY the SQL query in ```sql blocks
@@ -115,7 +116,7 @@ if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
                         
                         if is_valid:
                             try:
-                                result = conn.execute(raw_sql).fetchdf()
+                                result = pd.read_sql_query(raw_sql, conn)
                                 st.dataframe(result)
                                 st.success("Query executed successfully!")
                             except Exception as e:
