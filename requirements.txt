@@ -4,5 +4,3 @@ duckdb
 openpyxl
 groq
 requests
-re2
-csv
