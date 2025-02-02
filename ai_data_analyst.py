@@ -9,6 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
+from wordcloud import WordCloud
 from groq import Groq
 
 # Function to clean table names
@@ -60,54 +61,142 @@ def validate_sql_query(sql_query, valid_columns, table_name):
     
     return True, ""
 
-# Function to create various charts based on data
+# Function to create various charts with dynamic column selection
 def create_chart(df, chart_type):
-    st.subheader(f"📊 {chart_type} Chart")
-
-    if chart_type == "Bar":
-        fig = px.bar(df, x=df.columns[0], y=df.columns[1], title="Bar Chart")
-    elif chart_type == "Stacked Bar":
-        fig = px.bar(df, x=df.columns[0], y=df.columns[1:], title="Stacked Bar Chart", barmode="stack")
-    elif chart_type == "Grouped Bar":
-        fig = px.bar(df, x=df.columns[0], y=df.columns[1:], title="Grouped Bar Chart", barmode="group")
-    elif chart_type == "Line":
-        fig = px.line(df, x=df.columns[0], y=df.columns[1], title="Line Chart")
-    elif chart_type == "Area":
-        fig = px.area(df, x=df.columns[0], y=df.columns[1], title="Area Chart")
-    elif chart_type == "Stacked Area":
-        fig = px.area(df, x=df.columns[0], y=df.columns[1:], title="Stacked Area Chart")
-    elif chart_type == "Pie":
-        fig = px.pie(df, names=df.columns[0], values=df.columns[1], title="Pie Chart")
-    elif chart_type == "Donut":
-        fig = px.pie(df, names=df.columns[0], values=df.columns[1], hole=0.4, title="Donut Chart")
-    elif chart_type == "Histogram":
-        fig = px.histogram(df, x=df.columns[0], title="Histogram")
-    elif chart_type == "Box Plot":
-        fig = px.box(df, y=df.columns[1:], title="Box Plot")
-    elif chart_type == "Scatter":
-        fig = px.scatter(df, x=df.columns[0], y=df.columns[1], title="Scatter Plot")
-    elif chart_type == "Bubble":
-        fig = px.scatter(df, x=df.columns[0], y=df.columns[1], size=df[df.columns[2]], title="Bubble Chart")
-    elif chart_type == "Heatmap":
-        fig = sns.heatmap(df.corr(), annot=True, cmap="coolwarm")
-        st.pyplot(fig.figure)
-        return
-    elif chart_type == "Violin":
-        fig = px.violin(df, y=df.columns[1], title="Violin Plot")
-    elif chart_type == "Candlestick":
-        fig = go.Figure(data=[go.Candlestick(
-            x=df[df.columns[0]],
-            open=df[df.columns[1]],
-            high=df[df.columns[2]],
-            low=df[df.columns[3]],
-            close=df[df.columns[4]]
-        )])
-        fig.update_layout(title="Candlestick Chart")
-    else:
-        st.error("Unsupported chart type selected.")
-        return
+    st.subheader(f"📊 {chart_type}")
+    columns = df.columns.tolist()
     
-    st.plotly_chart(fig)
+    if chart_type == "Bar Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        fig = px.bar(df, x=x_col, y=y_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Stacked Bar Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_cols = st.multiselect("Select Y-axis columns", columns)
+        if y_cols:
+            fig = px.bar(df, x=x_col, y=y_cols, barmode="stack")
+            st.plotly_chart(fig)
+    
+    elif chart_type == "Grouped Bar Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_cols = st.multiselect("Select Y-axis columns", columns)
+        if y_cols:
+            fig = px.bar(df, x=x_col, y=y_cols, barmode="group")
+            st.plotly_chart(fig)
+    
+    elif chart_type == "Line Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        fig = px.line(df, x=x_col, y=y_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Area Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        fig = px.area(df, x=x_col, y=y_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Stacked Area Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_cols = st.multiselect("Select Y-axis columns", columns)
+        if y_cols:
+            fig = px.area(df, x=x_col, y=y_cols)
+            st.plotly_chart(fig)
+    
+    elif chart_type == "Pie Chart":
+        names_col = st.selectbox("Select Categories column", columns, index=0)
+        values_col = st.selectbox("Select Values column", columns, index=1%len(columns))
+        fig = px.pie(df, names=names_col, values=values_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Donut Chart":
+        names_col = st.selectbox("Select Categories column", columns, index=0)
+        values_col = st.selectbox("Select Values column", columns, index=1%len(columns))
+        fig = px.pie(df, names=names_col, values=values_col, hole=0.4)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Histogram":
+        x_col = st.selectbox("Select Column", columns, index=0)
+        fig = px.histogram(df, x=x_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Box Plot":
+        y_cols = st.multiselect("Select Columns", columns)
+        if y_cols:
+            fig = px.box(df, y=y_cols)
+            st.plotly_chart(fig)
+    
+    elif chart_type == "Violin Plot":
+        y_col = st.selectbox("Select Y-axis column", columns, index=0)
+        x_col = st.selectbox("Select X-axis column (optional)", [None] + columns)
+        fig = px.violin(df, y=y_col, x=x_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Scatter Plot":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        color_col = st.selectbox("Select Color column (optional)", [None] + columns)
+        fig = px.scatter(df, x=x_col, y=y_col, color=color_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Bubble Chart":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        size_col = st.selectbox("Select Size column", columns, index=2%len(columns))
+        fig = px.scatter(df, x=x_col, y=y_col, size=size_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Heatmap":
+        x_col = st.selectbox("Select X-axis column", columns, index=0)
+        y_col = st.selectbox("Select Y-axis column", columns, index=1%len(columns))
+        z_col = st.selectbox("Select Values column", columns, index=2%len(columns))
+        fig = px.density_heatmap(df, x=x_col, y=y_col, z=z_col)
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Candlestick Chart":
+        date_col = st.selectbox("Select Date column", columns)
+        open_col = st.selectbox("Select Open column", columns)
+        high_col = st.selectbox("Select High column", columns)
+        low_col = st.selectbox("Select Low column", columns)
+        close_col = st.selectbox("Select Close column", columns)
+        fig = go.Figure(data=[go.Candlestick(
+            x=df[date_col], open=df[open_col],
+            high=df[high_col], low=df[low_col],
+            close=df[close_col])])
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Treemap":
+        path_cols = st.multiselect("Select Hierarchy columns", columns)
+        value_col = st.selectbox("Select Value column", columns)
+        if path_cols and value_col:
+            fig = px.treemap(df, path=path_cols, values=value_col)
+            st.plotly_chart(fig)
+    
+    elif chart_type == "Sankey Diagram":
+        source_col = st.selectbox("Select Source column", columns)
+        target_col = st.selectbox("Select Target column", columns)
+        value_col = st.selectbox("Select Value column", columns)
+        fig = go.Figure(go.Sankey(
+            node=dict(pad=15, thickness=20),
+            link=dict(
+                source=df[source_col].astype('category').cat.codes,
+                target=df[target_col].astype('category').cat.codes,
+                value=df[value_col]
+            )
+        ))
+        st.plotly_chart(fig)
+    
+    elif chart_type == "Word Cloud":
+        text_col = st.selectbox("Select Text column", columns)
+        text = ' '.join(df[text_col].astype(str))
+        wordcloud = WordCloud().generate(text)
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis("off")
+        st.pyplot(plt)
+    
+    # Add more chart types following the same pattern
 
 # Streamlit app UI
 st.title("📊 AI-Powered Data Analyst & Visualization")
@@ -115,6 +204,14 @@ st.title("📊 AI-Powered Data Analyst & Visualization")
 with st.sidebar:
     st.header("API Configuration")
     groq_key = st.text_input("Groq API Key:", type="password")
+
+chart_options = [
+    "Bar Chart", "Stacked Bar Chart", "Grouped Bar Chart",
+    "Line Chart", "Area Chart", "Stacked Area Chart",
+    "Pie Chart", "Donut Chart", "Histogram", "Box Plot",
+    "Violin Plot", "Scatter Plot", "Bubble Chart", "Heatmap",
+    "Candlestick Chart", "Treemap", "Sankey Diagram", "Word Cloud"
+]
 
 if uploaded_file := st.file_uploader("Upload a CSV or Excel file", type=["csv", "xlsx"]):
     temp_path, columns, df, table_name = preprocess_and_save(uploaded_file)
@@ -137,7 +234,7 @@ if uploaded_file := st.file_uploader("Upload a CSV or Excel file", type=["csv", 
                     groq_client = Groq(api_key=groq_key)
                     prompt = f"""
                     Generate a DuckDB SQL query for {table_name} with columns: {columns}.
-                    Suggest a best-fit chart type (Bar, Line, Pie, Heatmap, Scatter, etc.).
+                    Suggest a best-fit chart type from: {chart_options}.
                     """
                     
                     response = groq_client.chat.completions.create(
@@ -158,10 +255,7 @@ if uploaded_file := st.file_uploader("Upload a CSV or Excel file", type=["csv", 
                                 result = conn.execute(raw_sql).fetchdf()
                                 st.dataframe(result)
 
-                                chart_type = st.selectbox("Select Visualization Type", [
-                                    "Bar", "Line", "Pie", "Histogram", "Scatter", "Bubble", "Box Plot", "Violin", "Heatmap", "Candlestick"
-                                ])
-
+                                chart_type = st.selectbox("Select Visualization Type", chart_options)
                                 create_chart(result, chart_type)
 
                                 st.success("✅ Query executed successfully!")
