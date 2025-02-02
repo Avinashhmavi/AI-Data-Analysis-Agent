@@ -4,3 +4,7 @@ duckdb
 openpyxl
 groq
 requests
+plotly
+matplotlib
+seaborn
+wordcloud
