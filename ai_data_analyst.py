@@ -63,11 +63,10 @@ def validate_sql_query(sql_query, valid_columns, table_name):
     return True, ""
 
 # Streamlit app
-st.title("📊 Smart Data Analyst")
+st.title("📊🔥 Data Query Analyst")
 
-with st.sidebar:
-    st.header("API Configuration")
-    groq_key = st.text_input("Groq API Key:", type="password")
+# Fetch Groq API key from Streamlit secrets
+groq_key = st.secrets["GROQ_API_KEY"]
 
 if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
     temp_path, columns, df, table_name = preprocess_and_save(uploaded_file)
@@ -79,7 +78,7 @@ if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
         conn = duckdb.connect(':memory:')
         conn.register(table_name, df)
         
-        st.markdown(f"**Available Columns in `{table_name}`:**")
+        st.markdown(f"**Available Columns 📄 in `{table_name}`:**")
         st.write([col for col in columns])
 
         query = st.text_area("Ask a question about the data:", 
