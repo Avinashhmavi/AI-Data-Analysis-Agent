@@ -1,4 +1,4 @@
-### AI Data Analyst 
+## 🤖🧑‍💻AI Data Analyst 
 
 📊 **AI Data Analyst** is a Streamlit-based web application that allows users to upload data files (CSV or Excel) and interact with them using natural language queries. The app leverages the **Groq API** to generate SQL queries based on user questions and executes them using **DuckDB**. The results are displayed in an interactive and user-friendly interface, making data analysis accessible to everyone.
 
