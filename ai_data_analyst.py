@@ -99,7 +99,7 @@ if uploaded_file := st.file_uploader("Upload data file", type=["csv", "xlsx"]):
                     
                     response = groq_client.chat.completions.create(
                         messages=[{"role": "user", "content": prompt}],
-                        model="mixtral-8x7b-32768",
+                        model="llama3-70b-8192",
                     )
                     
                     raw_sql = extract_sql_query(response.choices[0].message.content)
